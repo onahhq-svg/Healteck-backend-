@@ -7,7 +7,7 @@ const swaggerSpec = YAML.load(specPath);
 
 export default function setupSwagger(app) {
   const enabled =
-    process.env.NODE_ENV !== "production" ||
+    process.env.NODE_ENV == "production" ||
     process.env.SWAGGER_ENABLE === "true";
   if (!enabled) return;
   app.use(
