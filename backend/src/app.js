@@ -1,13 +1,27 @@
 import express from "express";
 import routes from "./routes.js";
 import { errorHandler } from "./middlewares/error.middleware.js";
+import { requestLogger } from "./middlewares/logger.middleware.js";
+import { authLimiter, apiLimiter } from "./middlewares/ratelimit.middleware.js";
+import securityMiddleware from "./middlewares/security.middleware.js";
+import homeRoutes from "./modules/home/home.routes.js";
+import adminRoutes from "./modules/admin/admin.routes.js";
+import setupSwagger from "./config/swagger.js";
 
 export default function createApp() {
   const app = express();
+  app.use(requestLogger);
+  // Security middlewares (helmet, cors, sanitizers)
+  securityMiddleware(app);
   app.use(express.json());
 
-  app.use("/auth", routes.auth);
-  app.use("/", routes.api);
+  // Swagger UI (enabled in non-production or when SWAGGER_ENABLE=true)
+  setupSwagger(app);
+
+  app.use("/auth", authLimiter, routes.auth);
+  app.use("/", homeRoutes);
+  app.use("/admin", apiLimiter, adminRoutes);
+  app.use("/", apiLimiter, routes.api);
 
   app.use(errorHandler);
 

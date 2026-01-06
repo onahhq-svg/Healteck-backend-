@@ -11,7 +11,7 @@ apiRouter.get("/me", authMiddleware, asyncHandler(userController.getMe));
 apiRouter.put("/me", authMiddleware, asyncHandler(userController.updateMe));
 
 export default {
-  auth: authRoutes,
-  api: apiRouter,
+    auth: authRoutes,
+    api: apiRouter,
 };
 //# Central route loader
