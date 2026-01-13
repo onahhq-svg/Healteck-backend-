@@ -1,7 +1,7 @@
 import { verifyAccess } from "../utils/token.js";
 import User from "../modules/user/user.model.js";
 
-export default async (req, res, next) => {
+export default  async (req, res, next) => {
     try {
         const auth = req.headers.authorization;
         if (!auth || !auth.startsWith("Bearer ")) {

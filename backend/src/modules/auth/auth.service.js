@@ -115,5 +115,5 @@ const logout = async ({ refreshToken }) => {
     return;
 };
 
-export { register, login, refresh, logout };
-export default { register, login, refresh, logout };
+export { register, login, refresh, logout, createTokensForUser };
+export default { register, login, refresh, logout, createTokensForUser };
