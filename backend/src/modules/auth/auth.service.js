@@ -11,7 +11,10 @@ import {
     verifyRefresh,
 } from "../../utils/token.js";
 import ms from "ms";
-import { jwt } from "../../config/env.js";
+import jwt from "../../config/env.js";
+import nodemailer from "nodemailer";
+import OtpToken from "../../models/otpToken.model.js";
+import emailConfig from "../../config/email.config.js";
 
 const createTokensForUser = async (user) => {
     const payload = { sub: user._id.toString(), role: user.role };
@@ -115,5 +118,40 @@ const logout = async ({ refreshToken }) => {
     return;
 };
 
-export { register, login, refresh, logout, createTokensForUser };
-export default { register, login, refresh, logout, createTokensForUser };
+//for otp
+function generateOTP() {
+    return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
+async function sendOTPEmail(email) {
+    const otp = generateOTP();
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes from now
+    await OtpToken.create({ email, otp, expiresAt });
+    
+    console.log("📧 [SENDOTP] Email Config:", {
+        host: emailConfig.host,
+        port: emailConfig.port,
+        secure: emailConfig.secure,
+        user: emailConfig.auth.user || "NOT SET",
+    });
+    
+    const transporter = nodemailer.createTransport({
+        host: emailConfig.host,
+        port: emailConfig.port,
+        secure: emailConfig.secure,
+        auth: emailConfig.auth.user ? {
+            user: emailConfig.auth.user,
+            pass: emailConfig.auth.pass,
+        } : undefined,
+        tls: emailConfig.tls,
+    });
+    await transporter.sendMail({
+        from: '"HealTek" <noreply@healtek.com>',
+        to: email,
+        subject: "Your OTP Code",
+        text: `Your OTP code is ${otp}. It will expire in 10 minutes.`,
+    })
+}
+
+export { register, login, refresh, logout, createTokensForUser, sendOTPEmail };
+export default { register, login, refresh, logout, createTokensForUser, sendOTPEmail };

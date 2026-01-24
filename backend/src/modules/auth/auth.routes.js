@@ -11,5 +11,6 @@ router.post("/refresh", asyncHandler(controller.refresh));
 router.post("/logout", asyncHandler(controller.logout));
 router.post("/forgot-password", asyncHandler(controller.forgotPassword));
 router.post("/reset-password", asyncHandler(controller.resetPassword));
+router.post("/verify-otp", asyncHandler(controller.verifyOTP));
 
 export default router;

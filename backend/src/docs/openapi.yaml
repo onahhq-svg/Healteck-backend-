@@ -131,7 +131,7 @@ paths:
                   type: string
       responses:
         '201':
-          description: Created
+          description: User created successfully. OTP email has been sent.
           content:
             application/json:
               schema:
@@ -139,10 +139,67 @@ paths:
                 properties:
                   user:
                     $ref: '#/components/schemas/User'
-                  tokens:
-                    $ref: '#/components/schemas/Tokens'
+                  success:
+                    type: boolean
+                  message:
+                    type: string
         '400':
           $ref: '#/components/schemas/Error'
+        '409':
+          description: Email already in use
+
+  /auth/verify-otp:
+    post:
+      tags:
+        - Authentication
+      summary: Verify OTP and authenticate user
+      description: Verifies the OTP code sent to user's email and returns authentication tokens
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - otp
+              properties:
+                email:
+                  type: string
+                  description: User's email address
+                otp:
+                  type: string
+                  description: 6-digit OTP code from email
+      responses:
+        '200':
+          description: OTP verified successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  accessToken:
+                    type: string
+                    description: JWT access token
+                  refreshToken:
+                    type: string
+                    description: JWT refresh token
+                  user:
+                    $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid OTP
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid OTP"
 
   /auth/login:
     post:
