@@ -1,4 +1,16 @@
 export const ROLES = {
     USER: "USER",
     ADMIN: "ADMIN",
+    THERAPIST: "THERAPIST",
+    FITNESS: "FITNESS",
+    NUTRITIONIST: "NUTRITIONIST",
 };
+
+export const ROLE_STATUS = {
+    PENDING: "PENDING",
+    APPROVED: "APPROVED",
+    REJECTED: "REJECTED",
+};
+
+export const DEFAULT_ROLE = ROLES.USER;
+

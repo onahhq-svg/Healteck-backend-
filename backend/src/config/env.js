@@ -6,7 +6,17 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const envPath = process.env.NODE_ENV === "test" ? ".env.test" : ".env";
-dotenv.config({ path: path.resolve(process.cwd(), envPath) });
+const resolvedPath = path.resolve(process.cwd(), envPath);
+console.log("📋 [ENV] Loading .env from:", resolvedPath);
+const result = dotenv.config({ path: resolvedPath });
+if (result.error) {
+    console.warn("⚠️ [ENV] No .env file found at:", resolvedPath);
+} else {
+    console.log("✅ [ENV] .env file loaded successfully");
+    console.log("📧 [ENV] EMAIL_HOST:", process.env.EMAIL_HOST);
+    console.log("📧 [ENV] EMAIL_PORT:", process.env.EMAIL_PORT);
+    console.log("📧 [ENV] EMAIL_USER:", process.env.EMAIL_USER ? "***SET***" : "NOT SET");
+}
 
 // Minimal required envs with defaults for non-production
 process.env.PORT = process.env.PORT || "3000";

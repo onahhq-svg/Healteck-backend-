@@ -21,7 +21,20 @@ const validate = (schema, payload) => {
     return value;
     };
 
+const forgotPasswordSchema = Joi.object({
+    email: Joi.string().email().required(),
+    });
+
+const resetPasswordSchema = Joi.object({
+    token: Joi.string().required(),
+    newPassword: Joi.string().min(6).required(),
+    confirmPassword: Joi.ref('newPassword'),
+}).with('newPassword', 'confirmPassword');
+
+export const validateForgotPassword = (p) => validate(forgotPasswordSchema, p);
+export const validateResetPassword = (p) => validate(resetPasswordSchema, p);
+
 export const validateRegister = (p) => validate(registerSchema, p);
 export const validateLogin = (p) => validate(loginSchema, p);
 
-export default { validateRegister, validateLogin };
+export default { validateRegister, validateLogin, validateForgotPassword, validateResetPassword };

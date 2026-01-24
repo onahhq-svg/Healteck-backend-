@@ -13,6 +13,12 @@ export default function setupSwagger(app) {
   app.use(
     "/api-docs",
     swaggerUi.serve,
-    swaggerUi.setup(swaggerSpec, { explorer: true })
+    swaggerUi.setup(swaggerSpec, { 
+      explorer: true,
+      swaggerOptions: {
+        tagsSorter: 'alpha',
+        operationsSorter: 'alpha'
+      }
+    })
   );
 }
