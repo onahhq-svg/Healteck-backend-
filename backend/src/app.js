@@ -17,20 +17,40 @@ export default function createApp() {
   // Security middlewares (helmet, cors, sanitizers)
   securityMiddleware(app);
   app.use(express.json());
-  app.use(cors({origin:"http://localhost:5173",credentials:true}));
+
+  // CORS Configuration - Allow both local development and production domains
+  const allowedOrigins = [
+    "http://localhost:5173",
+    "http://localhost:3000",
+    "https://healteck-backend.onrender.com",
+    process.env.FRONTEND_URL || "https://your-netlify-domain.netlify.app",
+  ];
+
+  app.use(
+    cors({
+      origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+          callback(null, true);
+        } else {
+          callback(new Error("Not allowed by CORS"));
+        }
+      },
+      credentials: true,
+    }),
+  );
 
   // Swagger UI (enabled in non-production or when SWAGGER_ENABLE=true)
   setupSwagger(app);
-//public routes
+  //public routes
   app.use("/auth", authLimiter, routes.auth);
   app.use("/", homeRoutes);
- 
+
   //protected routes
   app.use(authMiddleware);
   app.use(attachProfile);
 
   //API routes
-  
+
   app.use("/admin", apiLimiter, adminRoutes);
   app.use("/", apiLimiter, routes.api);
   app.use(errorHandler);

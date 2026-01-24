@@ -10,12 +10,15 @@ const resolvedPath = path.resolve(process.cwd(), envPath);
 console.log("📋 [ENV] Loading .env from:", resolvedPath);
 const result = dotenv.config({ path: resolvedPath });
 if (result.error) {
-    console.warn("⚠️ [ENV] No .env file found at:", resolvedPath);
+  console.warn("⚠️ [ENV] No .env file found at:", resolvedPath);
 } else {
-    console.log("✅ [ENV] .env file loaded successfully");
-    console.log("📧 [ENV] EMAIL_HOST:", process.env.EMAIL_HOST);
-    console.log("📧 [ENV] EMAIL_PORT:", process.env.EMAIL_PORT);
-    console.log("📧 [ENV] EMAIL_USER:", process.env.EMAIL_USER ? "***SET***" : "NOT SET");
+  console.log("✅ [ENV] .env file loaded successfully");
+  console.log("📧 [ENV] EMAIL_HOST:", process.env.EMAIL_HOST);
+  console.log("📧 [ENV] EMAIL_PORT:", process.env.EMAIL_PORT);
+  console.log(
+    "📧 [ENV] EMAIL_USER:",
+    process.env.EMAIL_USER ? "***SET***" : "NOT SET",
+  );
 }
 
 // Minimal required envs with defaults for non-production
@@ -35,7 +38,7 @@ if (process.env.NODE_ENV === "production") {
   const missing = requiredInProd.filter((k) => !process.env[k]);
   if (missing.length) {
     console.error(
-      `Missing required env vars in production: ${missing.join(", ")}`
+      `Missing required env vars in production: ${missing.join(", ")}`,
     );
     throw new Error("Missing required environment variables");
   }
@@ -46,7 +49,7 @@ if (process.env.NODE_ENV === "production") {
     process.env.JWT_REFRESH_SECRET === "change_me_refresh_secret"
   ) {
     console.warn(
-      "Using default JWT secrets — change for production environments."
+      "Using default JWT secrets — change for production environments.",
     );
   }
 }
